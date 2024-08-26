@@ -1,68 +1,88 @@
 import Link from "next/link";
-import { IoMoonSharp, IoSearch, IoSearchSharp } from "react-icons/io5";
+import { IoMoonSharp, IoSearchSharp } from "react-icons/io5";
 import { HiBars3BottomRight } from "react-icons/hi2";
 import { LuSun } from "react-icons/lu";
 import { FaXmark } from "react-icons/fa6";
 import { useEffect, useRef, useState } from "react";
+import useFetchData from "@/hooks/useFetchData";
 
 export default function Header() {
-  //searchbar open and close function
+  // Search bar open and close state
   const [searchOpen, setSearchOpen] = useState(false);
 
   const inputRef = useRef(null);
 
+  // Clear input field
   const clearInput = () => {
     if (inputRef.current) {
       inputRef.current.value = "";
+      setSearchQuery("");
     }
   };
 
-  //for open searchbar
-  const openSearch = () => {
+  // Toggle search bar visibility
+  const toggleSearch = () => {
     setSearchOpen(!searchOpen);
   };
 
-  //for close searchbar
+  // Close search bar
   const closeSearch = () => {
     setSearchOpen(false);
   };
 
-  //aside bar for mobile device
+  // Aside bar for mobile devices
   const [aside, setAside] = useState(false);
 
-  const asideOpen = () => {
-    setAside(true);
-  };
-  const asideClose = () => {
-    setAside(false);
+  const toggleAside = () => {
+    setAside(!aside);
   };
 
   const handleLinkClick = () => {
     setAside(false);
   };
 
-  //dark mode
-
+  // Dark mode state and functionality
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    const isDarkMode = localStorage.getItem("darkMode") === "true";
+    const isSystemDarkMode = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    const isDarkMode =
+      isSystemDarkMode || localStorage.getItem("darkMode") === "true";
     setDarkMode(isDarkMode);
   }, []);
 
   useEffect(() => {
     if (darkMode) {
       document.body.classList.add("dark");
-      localStorage.setItem("darkMode", true);
+      localStorage.setItem("darkMode", "true");
     } else {
       document.body.classList.remove("dark");
-      localStorage.setItem("darkMode", false);
+      localStorage.setItem("darkMode", "false");
     }
   }, [darkMode]);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
+
+  // Fetching and filtering data
+  const [alldata, loading] = useFetchData("/api/getblog");
+
+  // Ensure alldata is an array
+  const publishedBlogs = Array.isArray(alldata)
+    ? alldata.filter((blog) => blog.status === "publish")
+    : [];
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredBlogs =
+    searchQuery.trim() === ""
+      ? publishedBlogs
+      : publishedBlogs.filter((blog) =>
+          blog.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
   return (
     <>
@@ -76,10 +96,14 @@ export default function Header() {
           <div className="searchbar">
             <IoSearchSharp />
             <input
-              onClick={openSearch}
+              onClick={toggleSearch}
               type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Discover news, articles and more"
+              ref={inputRef}
             />
+            <FaXmark onClick={clearInput} style={{ cursor: "pointer" }} />
           </div>
           <div className="nav_list_dark">
             <ul>
@@ -97,10 +121,10 @@ export default function Header() {
               <button onClick={toggleDarkMode}>
                 {darkMode ? <IoMoonSharp /> : <LuSun />}
               </button>
-              <button onClick={openSearch}>
-                <IoSearch />
+              <button onClick={toggleSearch}>
+                <IoSearchSharp />
               </button>
-              <button onClick={asideOpen}>
+              <button onClick={toggleAside}>
                 <HiBars3BottomRight />
               </button>
             </div>
@@ -121,15 +145,44 @@ export default function Header() {
             <IoSearchSharp />
             <input
               type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Discover news, articles and more"
               ref={inputRef}
             />
             <FaXmark onClick={clearInput} style={{ cursor: "pointer" }} />
           </div>
           <div className="search_data text-center">
-            <div className="blog">
-              <h3>Search data</h3>
-            </div>
+            {loading ? (
+              <div className="wh_100 flex flex-center mt-2 pb-5">
+                <div className="loader"></div>
+              </div>
+            ) : (
+              <>
+                {searchQuery ? (
+                  <>
+                    {filteredBlogs.slice(0, 3).map((blog) => {
+                      return (
+                        <div className="blog" key={blog._id}>
+                          <div className="bloginfo">
+                            <Link href={`/blog/${blog.slug}`}>
+                              <h3>{blog.slug}</h3>
+                            </Link>
+                            <p>
+                              Lorem ipsum dolor sit amet consectetur adipisicing
+                              elit. Similique modi inventore voluptas in
+                              expedita nesciunt obcaecati, ex fuga fugit harum?
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <div>No Search Result</div>
+                )}
+              </>
+            )}
           </div>
           <div className="exit_search" onClick={closeSearch}>
             <div>
@@ -141,7 +194,7 @@ export default function Header() {
         <div className={aside ? "navlist_mobile open" : "navlist_mobile"}>
           <div className="navlist_m_title flex flex-sb">
             <h1>JBBLOGS</h1>
-            <button onClick={asideClose}>
+            <button onClick={toggleAside}>
               <FaXmark />
             </button>
           </div>
