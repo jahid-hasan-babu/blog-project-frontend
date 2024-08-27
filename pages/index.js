@@ -5,13 +5,29 @@ import { useState } from "react";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(4);
   const [alldata, loading] = useFetchData("/api/getblog");
 
-  // filter publish blogs
-  // Ensure alldata is an array
+  // Ensure alldata is an array and filter published blogs
   const publishedBlogs = Array.isArray(alldata)
     ? alldata.filter((blog) => blog.status === "publish")
     : [];
+
+  const indexOfLastBlog = currentPage * perPage;
+  const indexOfFirstBlog = indexOfLastBlog - perPage;
+  const currentBlogs = publishedBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
+
+  const totalBlogs = publishedBlogs.length;
+
+  // Generate page numbers
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(totalBlogs / perPage); i++) {
+    pageNumbers.push(i);
+  }
+
+  function paginate(pageNumber) {
+    setCurrentPage(pageNumber);
+  }
 
   function extractFirstImageUrl(markdownContent) {
     if (!markdownContent || typeof markdownContent !== "string") {
@@ -71,7 +87,7 @@ export default function Home() {
                 </div>
               ) : (
                 <>
-                  {publishedBlogs.map((blog) => {
+                  {currentBlogs.map((blog) => {
                     const firstImageUrl = extractFirstImageUrl(
                       blog.description
                     );
@@ -123,6 +139,34 @@ export default function Home() {
                   })}
                 </>
               )}
+            </div>
+            <div className="blogpagination">
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              {pageNumbers
+                .slice(
+                  Math.max(currentPage - 3, 0),
+                  Math.min(currentPage + 2, pageNumbers.length)
+                )
+                .map((number) => (
+                  <button
+                    key={number}
+                    onClick={() => paginate(number)}
+                    className={currentPage === number ? "active" : ""}
+                  >
+                    {number}
+                  </button>
+                ))}
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === pageNumbers.length}
+              >
+                Next
+              </button>
             </div>
           </div>
         </div>
