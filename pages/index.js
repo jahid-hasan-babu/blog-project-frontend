@@ -2,6 +2,12 @@ import useFetchData from "@/hooks/useFetchData";
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
+import { FaHtml5 } from "react-icons/fa6";
+import { TbBrandNextjs, TbFileDatabase } from "react-icons/tb";
+import { AiOutlineDeploymentUnit } from "react-icons/ai";
+import { FaGithub } from "react-icons/fa";
+import { RiTwitterXFill } from "react-icons/ri";
+import { FaInstagram } from "react-icons/fa";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -167,6 +173,78 @@ export default function Home() {
               >
                 Next
               </button>
+            </div>
+          </div>
+          <div className="rightblog_info">
+            <div className="topics_sec">
+              <h2>Topics</h2>
+              <div className="topics_list">
+                <div className="topics_list">
+                  <Link href="/topics/htmlcssjss">
+                    <div className="topics">
+                      <div className="flex flex-center topics_svg">
+                        <FaHtml5 />
+                      </div>
+                      <h3>Html, Css & Jss</h3>
+                    </div>
+                  </Link>
+                  <Link href="/topics/nextjs">
+                    <div className="topics">
+                      <div className="flex flex-center topics_svg">
+                        <TbBrandNextjs />
+                      </div>
+                      <h3>Next js, React Js</h3>
+                    </div>
+                  </Link>
+                  <Link href="/topics/database">
+                    <div className="topics">
+                      <div className="flex flex-center topics_svg">
+                        <TbFileDatabase />
+                      </div>
+                      <h3>Database</h3>
+                    </div>
+                  </Link>
+                  <Link href="/topics/deployment">
+                    <div className="topics">
+                      <div className="flex flex-center topics_svg">
+                        <AiOutlineDeploymentUnit />
+                      </div>
+                      <h3>Deployment</h3>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </div>
+            <div className="tags_sec mt-3">
+              <h2>Tags</h2>
+              <div className="tags_list">
+                <Link href="/tag/html">#html</Link>
+                <Link href="/tag/css">#css</Link>
+                <Link href="/tag/javascript">#javascript</Link>
+                <Link href="/tag/nextjs">#nextjs</Link>
+                <Link href="/tag/reactjs">#reactjs</Link>
+                <Link href="/tag/database">#database</Link>
+              </div>
+            </div>
+            <div className="letstalk_sec mt-3">
+              <h2>Leet`s Talk</h2>
+              <div className="talk_sec">
+                <h4>
+                  Want fo find out how i can solve problems specific to your
+                  business? let`s talk.
+                </h4>
+                <div className="social_talks flex flex-center gap-1 mt-2">
+                  <div className="st_ics">
+                    <FaGithub />
+                  </div>
+                  <div className="st_ics">
+                    <RiTwitterXFill />
+                  </div>
+                  <div className="st_ics">
+                    <FaInstagram />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
