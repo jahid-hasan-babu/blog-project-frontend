@@ -11,8 +11,10 @@ export default async function handler(req, res) {
         // Fetch a single blog by id
         const blog = await Blog.findById(req.query.id);
         res.json(blog);
-      } else if (req.query?.blogcategory) {
-        const cate = await Blog.find({ blogcategory: req.query.blogcategory });
+      } else if (req.query?.blogCategory) {
+        // Assuming blogCategory might be a comma-separated string
+        const categories = req.query.blogCategory.split(",");
+        const cate = await Blog.find({ blogCategory: { $in: categories } });
         res.json(cate.reverse());
       } else if (req.query?.tags) {
         const tag = await Blog.find({ tags: req.query.tags });

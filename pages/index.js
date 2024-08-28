@@ -19,6 +19,10 @@ export default function Home() {
     ? alldata.filter((blog) => blog.status === "publish")
     : [];
 
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   const indexOfLastBlog = currentPage * perPage;
   const indexOfFirstBlog = indexOfLastBlog - perPage;
   const currentBlogs = publishedBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
@@ -29,10 +33,6 @@ export default function Home() {
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(totalBlogs / perPage); i++) {
     pageNumbers.push(i);
-  }
-
-  function paginate(pageNumber) {
-    setCurrentPage(pageNumber);
   }
 
   function extractFirstImageUrl(markdownContent) {
@@ -63,7 +63,7 @@ export default function Home() {
           <div className="leftheader_info">
             <h1>
               Hi, I`m <span>JB Coder</span>. <br />
-              MERN/Fullstack Developer
+              MERN/Fullstack Developer <br />
             </h1>
             <h3>Specialized in Javascript and Next Js</h3>
             <div className="flex gap-2">
@@ -78,7 +78,7 @@ export default function Home() {
           <div className="rightheader_img">
             <div className="image_bg_top"></div>
             <div className="image_bg_top2"></div>
-            <img src="/img/resume.png" alt="resume" />
+            <img src="/img/man-removebg-preview.png" alt="resume" />
           </div>
         </div>
       </section>
@@ -180,7 +180,7 @@ export default function Home() {
               <h2>Topics</h2>
               <div className="topics_list">
                 <div className="topics_list">
-                  <Link href="/topics/htmlcssjss">
+                  <Link href="/topics/htmlcssjs">
                     <div className="topics">
                       <div className="flex flex-center topics_svg">
                         <FaHtml5 />
